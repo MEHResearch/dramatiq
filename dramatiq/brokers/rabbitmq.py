@@ -514,7 +514,7 @@ class _RabbitmqConsumer(Consumer):
             self._nack(method.delivery_tag)
             return None
 
-        rmq_message = _RabbitmqMessage(method.delivery_tag, message)
+        rmq_message = _RabbitmqMessage(method.delivery_tag, method.redelivered, message)
         self.known_tags.add(method.delivery_tag)
         return rmq_message
 
@@ -545,7 +545,8 @@ class _RabbitmqConsumer(Consumer):
 
 
 class _RabbitmqMessage(MessageProxy):
-    def __init__(self, tag, message):
+    def __init__(self, tag, redelivered, message):
         super().__init__(message)
 
         self._tag = tag
+        self._redelivered = redelivered
